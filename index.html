@@ -72,7 +72,7 @@
       height: 100dvh;
       overflow: hidden;
       isolation: isolate;
-      background: #5a7a1a;
+      background: #cfff49;
     }
 
     .hero-image,
@@ -87,13 +87,14 @@
       z-index: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      object-position: center top;
+      object-fit: contain;
+      object-position: center;
+      background: #cfff49;
     }
 
     .hero-scrim {
       z-index: 1;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.55));
     }
 
     .hero-gradient {
@@ -262,12 +263,12 @@
     @keyframes cardReveal {
       from {
         opacity: 0;
-        transform: translateY(40px);
+        transform: translate3d(0, var(--card-reveal-offset), 0);
       }
 
       to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translate3d(0, 0, 0);
       }
     }
 
@@ -290,9 +291,11 @@
     .spoiler-heading {
       max-width: 1200px;
       margin: 0 auto 120px;
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 11px;
-      letter-spacing: 0.2em;
+      color: #e5e5e5;
+      font-size: clamp(24px, 4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
       text-transform: uppercase;
     }
 
@@ -306,6 +309,7 @@
 
     .spoiler-card {
       position: relative;
+      --card-reveal-offset: 32px;
       min-height: 420px;
       overflow: hidden;
       padding: 72px 56px;
@@ -318,7 +322,8 @@
     .spoiler-card.card-final {
       grid-column: span 2;
       min-height: 420px;
-      background: #5a7a1a;
+      background: #cfff49;
+      color: #0f0f0f;
     }
 
     .spoiler-number {
@@ -346,6 +351,24 @@
       font-size: 15px;
       font-weight: 300;
       line-height: 1.8;
+    }
+
+    .spoiler-card.card-final .spoiler-title {
+      color: #0f0f0f;
+    }
+
+    .spoiler-card.card-final .spoiler-number,
+    .spoiler-card.card-final .spoiler-tag {
+      color: rgba(15, 15, 15, 0.55);
+    }
+
+    .spoiler-card.card-final .spoiler-text {
+      color: rgba(15, 15, 15, 0.72);
+    }
+
+    .spoiler-card.card-final .spoiler-link {
+      border-color: rgba(15, 15, 15, 0.55);
+      color: #0f0f0f;
     }
 
     .spoiler-tag {
@@ -378,7 +401,7 @@
     .feature-line {
       height: 1px;
       margin-bottom: 40px;
-      background: #fff;
+      background: #0f0f0f;
       opacity: 0.3;
       transform: scaleX(0);
       transform-origin: left;
@@ -392,7 +415,7 @@
       }
 
       .spoiler-card.card-final:hover {
-        background: #6a8f20;
+        background: #cfff49;
         border-color: transparent;
       }
     }
@@ -402,7 +425,7 @@
       padding: 14px 0;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      background: #5a7a1a;
+      background: #cfff49;
       white-space: nowrap;
     }
 
@@ -413,7 +436,7 @@
 
     .marquee-track span {
       margin: 0 24px;
-      color: rgba(255, 255, 255, 0.85);
+      color: #0f0f0f;
       font-family: 'Changeling Neo', system-ui, sans-serif;
       font-size: 11px;
       font-weight: 400;
@@ -504,7 +527,8 @@
       }
 
       .spoiler-heading {
-        margin-bottom: 72px;
+        margin-bottom: 64px;
+        font-size: clamp(22px, 9vw, 36px);
       }
 
       .spoiler-grid {
@@ -515,7 +539,12 @@
       .spoiler-card.card-final {
         grid-column: auto;
         min-height: 420px;
+        --card-reveal-offset: 20px;
         padding: 48px 24px 72px;
+      }
+
+      .marquee-track {
+        animation-duration: 22s;
       }
 
       .site-footer {
@@ -620,7 +649,7 @@
         <div class="spoiler-card">
           <p class="spoiler-number">03 —</p>
           <h2 class="spoiler-title">IL TUO AVATAR</h2>
-          <p class="spoiler-text">prima ancora di gareggiare, carichi un selfie e ottieni la tua identity card da competitore. già condivisibile.</p>
+          <p class="spoiler-text">prima ancora di gareggiare, carichi un selfie e ottieni la tua identity card da competitor. già condivisibile.</p>
           <p class="spoiler-tag">pre-evento</p>
         </div>
 
@@ -651,6 +680,8 @@
   <script>
     const cards = document.querySelectorAll('.spoiler-card');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.matchMedia('(max-width: 640px)').matches;
+    const cardStagger = isMobile ? 70 : 120;
     const finalLine = document.querySelector('.card-final .feature-line');
 
     if (!reduceMotion && 'IntersectionObserver' in window) {
@@ -678,7 +709,7 @@
 
       cards.forEach((card, i) => {
         card.style.opacity = '0';
-        card.dataset.delay = i * 120;
+        card.dataset.delay = i * cardStagger;
         observer.observe(card);
       });
     }
